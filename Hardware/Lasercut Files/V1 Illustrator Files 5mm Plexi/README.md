@@ -4,6 +4,7 @@
 #### Files:
 * Master.ai contains all parts of current version
 * LaseredPartsPlacement.ai keeps track of cutouts of current plexiglass plate (everything green is cutout)
+* Lasersession files only contain files of single lasercut sessions
 
 #### How to use:
 1) Duplicate LaseredPartsPlacement.ai file and save as LasersessionXX.ai
