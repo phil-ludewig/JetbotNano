@@ -42,7 +42,7 @@
  /****************************************************************
  * Constants
  ****************************************************************/
- 
+
 #define SYSFS_GPIO_DIR "/sys/class/gpio"
 #define POLL_TIMEOUT (3 * 1000) /* 3 seconds */
 #define MAX_BUF 64
@@ -65,7 +65,7 @@ enum pinValues {
 
 enum jetsonGPIONumber {
   gpio57  =  57,    // J3A1 - Pin 50
-	gpio160 = 160,	  // J3A2 - Pin 40	
+	gpio160 = 160,	  // J3A2 - Pin 40
 	gpio161 = 161,    // J3A2 - Pin 43
 	gpio162 = 162,    // J3A2 - Pin 46
 	gpio163 = 163,    // J3A2 - Pin 49
@@ -96,6 +96,32 @@ enum jetsonTX2GPIONumber {
        gpio394 = 394,      // J21 - Pin 38 - GPIO20
        gpio393 = 393,      // J21 - Pin 40 - GPIO21
 } ;
+
+enum jetsonNanoGPIONumber {
+       gpio216 = 216,      // J21 - Pin 29 - GPIO5
+       gpio50  = 50,       // J21 - Pin 31 - GPIO6
+       gpio14  = 14,       // J21 - Pin 33 - GPIO13
+       gpio194 = 194,      // J21 - Pin 35 - GPIO19
+       gpio16  = 16,       // J21 - Pin 37 - GPIO26
+       gpio17  = 17,       // J21 - Pin 32 - GPIO12
+       gpio18  = 18,       // J21 - Pin 36 - GPIO16
+       gpio149 = 149,      // J21 - Pin 38 - GPIO20
+       gpio200 = 200,      // J21 - Pin 40 - GPIO21
+       gpio38  = 38,       // J21 - Pin 38 - GPIO20
+       gpio76  = 76,       // J21 - Pin 40 - GPIO21
+       gpio12  = 12,      // J21 - Pin 38 - GPIO20
+       gpio79  = 79,      // J21 - Pin 40 - GPIO21
+       gpio232 = 232,      // J21 - Pin 38 - GPIO20
+       gpio15  = 15,      // J21 - Pin 40 - GPIO21
+       gpio13  = 13,      // J21 - Pin 38 - GPIO20
+       gpio19  = 19,      // J21 - Pin 40 - GPIO21
+       gpio20  = 20,      // J21 - Pin 38 - GPIO20
+       gpio168 = 168,      // J21 - Pin 40 - GPIO21
+       gpio51  = 51,      // J21 - Pin 38 - GPIO20
+       gpio77  = 77,      // J21 - Pin 40 - GPIO21
+       gpio78  = 78,      // J21 - Pin 38 - GPIO20
+} ;
+
 
 
 int gpioExport ( jetsonGPIO gpio ) ;

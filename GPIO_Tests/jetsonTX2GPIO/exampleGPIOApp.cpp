@@ -40,8 +40,8 @@ int main(int argc, char *argv[]){
     cout << "Testing the GPIO Pins" << endl;
 
 
-    jetsonTX1GPIONumber redLED = gpio219 ;     // Ouput
-    jetsonTX1GPIONumber pushButton = gpio38 ; // Input
+    jetsonNanoGPIONumber redLED = gpio79 ;     // Ouput
+    jetsonNanoGPIONumber pushButton = gpio38 ; // Input
     // Make the button and led available in user space
     gpioExport(pushButton) ;
     gpioExport(redLED) ;
@@ -93,5 +93,3 @@ int main(int argc, char *argv[]){
     gpioUnexport(pushButton);      // unexport the push button
     return 0;
 }
-
-
