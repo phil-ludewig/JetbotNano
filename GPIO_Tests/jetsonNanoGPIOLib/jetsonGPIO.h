@@ -52,8 +52,8 @@ typedef unsigned int pinDirection;
 typedef unsigned int pinValue;
 
 enum pinDirections {
-	inputPin  = 0,
-	outputPin = 1
+		inputPin  = 0,
+		outputPin = 1
 };
 
 enum pinValues {
@@ -63,40 +63,32 @@ enum pinValues {
 		on 		= 1
 };
 
-enum jetsonGPIONumber {
-  gpio57  =  57,    // J3A1 - Pin 50
-	gpio160 = 160,	  // J3A2 - Pin 40
-	gpio161 = 161,    // J3A2 - Pin 43
-	gpio162 = 162,    // J3A2 - Pin 46
-	gpio163 = 163,    // J3A2 - Pin 49
-	gpio164 = 164,    // J3A2 - Pin 52
-	gpio165 = 165,    // J3A2 - Pin 55
-	gpio166 = 166     // J3A2 - Pin 58
-};
-
+// All available Jetson Nano GPIO Pins
 enum jetsonNanoGPIONumber {
-       gpio216 = 216,      // J21 - Pin 29 - GPIO5
-       gpio50  = 50,       // J21 - Pin 31 - GPIO6
-       gpio14  = 14,       // J21 - Pin 33 - GPIO13
-       gpio194 = 194,      // J21 - Pin 35 - GPIO19
-       gpio16  = 16,       // J21 - Pin 37 - GPIO26
-       gpio17  = 17,       // J21 - Pin 32 - GPIO12
-       gpio18  = 18,       // J21 - Pin 36 - GPIO16
-       gpio149 = 149,      // J21 - Pin 38 - GPIO20
-       gpio200 = 200,      // J21 - Pin 40 - GPIO21
-       gpio38  = 38,       // J21 - Pin 38 - GPIO20
-       gpio76  = 76,       // J21 - Pin 40 - GPIO21
-       gpio12  = 12,      // J21 - Pin 38 - GPIO20
-       gpio79  = 79,      // J21 - Pin 40 - GPIO21
-       gpio232 = 232,      // J21 - Pin 38 - GPIO20
-       gpio15  = 15,      // J21 - Pin 40 - GPIO21
-       gpio13  = 13,      // J21 - Pin 38 - GPIO20
-       gpio19  = 19,      // J21 - Pin 40 - GPIO21
-       gpio20  = 20,      // J21 - Pin 38 - GPIO20
-       gpio168 = 168,      // J21 - Pin 40 - GPIO21
-       gpio51  = 51,      // J21 - Pin 38 - GPIO20
-       gpio77  = 77,      // J21 - Pin 40 - GPIO21
-       gpio78  = 78,      // J21 - Pin 38 - GPIO20
+
+		gpio216 = 216,	// J41 - Pin 7
+		gpio50  = 50,		// J41 - Pin 11
+		gpio79  = 79,		// J41 - Pin 12
+		gpio14  = 14,		// J41 - Pin 13
+		gpio194 = 194,	// J41 - Pin 15
+		gpio232 = 232,	// J41 - Pin 16
+		gpio15  = 15,		// J41 - Pin 18
+		gpio16  = 16,		// J41 - Pin 19
+		gpio17  = 17,		// J41 - Pin 21
+		gpio13  = 13,		// J41 - Pin 22
+		gpio18  = 18,		// J41 - Pin 23
+		gpio19  = 19,		// J41 - Pin 24
+		gpio20  = 20,		// J41 - Pin 26
+		gpio149 = 149,	// J41 - Pin 29
+		gpio200 = 200,	// J41 - Pin 31
+		gpio168 = 168,	// J41 - Pin 32
+		gpio38  = 38,		// J41 - Pin 33
+		gpio76  = 76,		// J41 - Pin 35
+		gpio51  = 51,		// J41 - Pin 36
+		gpio12  = 12,		// J41 - Pin 37
+		gpio77  = 77,		// J41 - Pin 38
+		gpio78  = 78,		// J41 - Pin 40
+
 };
 
 int gpioExport ( jetsonGPIO gpio ) ;
