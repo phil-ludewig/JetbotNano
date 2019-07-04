@@ -1,0 +1,33 @@
+# depslib dependency file v1.0
+1562250519 source:/home/ted/Robots/JetbotNano/Software/AutoDriverLibNano/jetsonGPIO.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	<unistd.h>
+	<fcntl.h>
+	<poll.h>
+	"jetsonGPIO.h"
+
+1562256959 /home/ted/Robots/JetbotNano/Software/AutoDriverLibNano/jetsonGPIO.h
+
+1497425648 source:/home/ted/Robots/JetbotNano/Software/AutoDriverLibNano/linux_spi.cpp
+	<stdio.h>
+	<unistd.h>
+	<string.h>
+	<dirent.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<fcntl.h>
+	<linux/types.h>
+	<linux/spi/spidev.h>
+	<sys/ioctl.h>
+	"linux_spi.h"
+
+1497425648 /home/ted/Robots/JetbotNano/Software/AutoDriverLibNano/linux_spi.h
+	<stdint.h>
+	<linux/spi/spidev.h>
+
+1562254050 source:/home/ted/Robots/JetbotNano/Software/AutoDriverLibNano/main.cpp
+	<iostream>
+
