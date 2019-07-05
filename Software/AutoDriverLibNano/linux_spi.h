@@ -48,7 +48,7 @@
 
 
 class Linux_SPI
-{    
+{
 
     public:
 
@@ -70,11 +70,14 @@ class Linux_SPI
         };
 
 
-         Linux_SPI();
+         Linux_SPI(const char * devName){
+         _devName = devName:
+         };
+
         ~Linux_SPI();
 
 
-        int  dev_open(const char *spi_dev);
+        int  dev_open(void);
         void dev_close(void);
 
         int  set_mode(uint8_t mode);
@@ -102,6 +105,9 @@ class Linux_SPI
 
         SPI_Error  _errno;
         int        _dev_fd;
+
+        // Ted's addition for openDevice fkt
+        const char* _devName;
 
 
         struct spi_ioc_transfer _spi_tr;

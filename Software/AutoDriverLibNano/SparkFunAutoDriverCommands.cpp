@@ -1,20 +1,21 @@
 #include "SparkFunAutoDriver.h"
+#include <cstdint>
 
 //commands.ino - Contains high-level command implementations- movement
 //   and configuration commands, for example.
 
 // Realize the "set parameter" function, to write to the various registers in
 //  the dSPIN chip.
-void AutoDriver::setParam(byte param, unsigned long value)
+void AutoDriver::setParam(uint8_t param, unsigned long value)
 {
   param |= SET_PARAM;
-  SPIXfer((byte)param);
+  SPIXfer((uint8_t)param);
   paramHandler(param, value);
 }
 
 // Realize the "get parameter" function, to read from the various registers in
 //  the dSPIN chip.
-long AutoDriver::getParam(byte param)
+long AutoDriver::getParam(uint8_t param)
 {
   SPIXfer(param | GET_PARAM);
   return paramHandler(param, 0);
@@ -53,7 +54,7 @@ long AutoDriver::getMark()
 //  will switch the device into full-step mode.
 // The spdCalc() function is provided to convert steps/s values into
 //  appropriate integer values for this function.
-void AutoDriver::run(byte dir, float stepsPerSec)
+void AutoDriver::run(uint8_t dir, float stepsPerSec)
 {
   SPIXfer(RUN | dir);
   unsigned long integerSpeed = spdCalc(stepsPerSec);
@@ -66,7 +67,7 @@ void AutoDriver::run(byte dir, float stepsPerSec)
   //  valid here.
 
   // We begin by pointing bytePointer at the first byte in integerSpeed.
-  byte* bytePointer = (byte*)&integerSpeed;
+  uint8_t* bytePointer = (uint8_t*)&integerSpeed;
   // Next, we'll iterate through a for loop, indexing across the bytes in
   //  integerSpeed starting with byte 2 and ending with byte 0.
   for (int8_t i = 2; i >= 0; i--)
@@ -80,7 +81,7 @@ void AutoDriver::run(byte dir, float stepsPerSec)
 //  the direction (set by the FWD and REV constants) imposed by the call
 //  of this function. Motion commands (RUN, MOVE, etc) will cause the device
 //  to exit step clocking mode.
-void AutoDriver::stepClock(byte dir)
+void AutoDriver::stepClock(uint8_t dir)
 {
   SPIXfer(STEP_CLOCK | dir);
 }
@@ -89,12 +90,12 @@ void AutoDriver::stepClock(byte dir)
 //  direction imposed by dir (FWD or REV constants may be used). The motor
 //  will accelerate according the acceleration and deceleration curves, and
 //  will run at MAX_SPEED. Stepping mode will adhere to FS_SPD value, as well.
-void AutoDriver::move(byte dir, unsigned long numSteps)
+void AutoDriver::move(uint8_t dir, unsigned long numSteps)
 {
   SPIXfer(MOVE | dir);
   if (numSteps > 0x3FFFFF) numSteps = 0x3FFFFF;
   // See run() for an explanation of what's going on here.
-  byte* bytePointer = (byte*)&numSteps;
+  uint8_t* bytePointer = (uint8_t*)&numSteps;
 
   for (int8_t i = 2; i >= 0; i--)
   {
@@ -111,7 +112,7 @@ void AutoDriver::goTo(long pos)
   SPIXfer(GOTO);
   if (pos > 0x3FFFFF) pos = 0x3FFFFF;
   // See run() for an explanation of what's going on here.
-  byte* bytePointer = (byte*)&pos;
+  uint8_t* bytePointer = (uint8_t*)&pos;
   for (int8_t i = 2; i >= 0; i--)
   {
     SPIXfer(bytePointer[i]);
@@ -119,12 +120,12 @@ void AutoDriver::goTo(long pos)
 }
 
 // Same as GOTO, but with user constrained rotational direction.
-void AutoDriver::goToDir(byte dir, long pos)
+void AutoDriver::goToDir(uint8_t dir, long pos)
 {
   SPIXfer(GOTO_DIR | dir);
   if (pos > 0x3FFFFF) pos = 0x3FFFFF;
   // See run() for an explanation of what's going on here.
-  byte* bytePointer = (byte*)&pos;
+  uint8_t* bytePointer = (uint8_t*)&pos;
   for (int8_t i = 2; i >= 0; i--)
   {
     SPIXfer(bytePointer[i]);
@@ -137,13 +138,13 @@ void AutoDriver::goToDir(byte dir, long pos)
 //  performed at the falling edge, and depending on the value of
 //  act (either RESET or COPY) the value in the ABS_POS register is
 //  either RESET to 0 or COPY-ed into the MARK register.
-void AutoDriver::goUntil(byte action, byte dir, float stepsPerSec)
+void AutoDriver::goUntil(uint8_t action, uint8_t dir, float stepsPerSec)
 {
   SPIXfer(GO_UNTIL | action | dir);
   unsigned long integerSpeed = spdCalc(stepsPerSec);
   if (integerSpeed > 0x3FFFFF) integerSpeed = 0x3FFFFF;
   // See run() for an explanation of what's going on here.
-  byte* bytePointer = (byte*)&integerSpeed;
+  uint8_t* bytePointer = (uint8_t*)&integerSpeed;
   for (int8_t i = 2; i >= 0; i--)
   {
     SPIXfer(bytePointer[i]);
@@ -157,7 +158,7 @@ void AutoDriver::goUntil(byte action, byte dir, float stepsPerSec)
 //  and the ABS_POS register is either COPY-ed into MARK or RESET to
 //  0, depending on whether RESET or COPY was passed to the function
 //  for act.
-void AutoDriver::releaseSw(byte action, byte dir)
+void AutoDriver::releaseSw(uint8_t action, uint8_t dir)
 {
   SPIXfer(RELEASE_SW | action | dir);
 }
@@ -234,7 +235,7 @@ void AutoDriver::hardHiZ()
 int AutoDriver::getStatus()
 {
   int temp = 0;
-  byte* bytePointer = (byte*)&temp;
+  uint8_t* bytePointer = (uint8_t*)&temp;
   SPIXfer(GET_STATUS);
   bytePointer[1] = SPIXfer(0);
   bytePointer[0] = SPIXfer(0);

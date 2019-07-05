@@ -1,5 +1,6 @@
 #include "SparkFunAutoDriver.h"
-#include <SPI.h>
+#include "linux_spi.h"
+#include <math.h>
 
 // AutoDriverSupport.cpp - Contains utility functions for converting real-world
 //  units (eg, steps/s) to values usable by the dsPIN controller. These are all
@@ -120,7 +121,7 @@ float AutoDriver::spdParse(unsigned long stepsPerSec)
 // Much of the functionality between "get parameter" and "set parameter" is
 //  very similar, so we deal with that by putting all of it in one function
 //  here to save memory space and simplify the program.
-long AutoDriver::paramHandler(byte param, unsigned long value)
+long AutoDriver::paramHandler(uint8_t param, unsigned long value)
 {
   long retVal = 0;   // This is a temp for the value to return.
 
@@ -280,7 +281,7 @@ long AutoDriver::paramHandler(byte param, unsigned long value)
       retVal = xferParam(0, 16);;
       break;
     default:
-      SPIXfer((byte)value);
+      SPIXfer((uint8_t)value);
       break;
   }
   return retVal;
@@ -289,19 +290,19 @@ long AutoDriver::paramHandler(byte param, unsigned long value)
 // Generalization of the subsections of the register read/write functionality.
 //  We want the end user to just write the value without worrying about length,
 //  so we pass a bit length parameter from the calling function.
-long AutoDriver::xferParam(unsigned long value, byte bitLen)
+long AutoDriver::xferParam(unsigned long value, uint8_t bitLen)
 {
-  byte byteLen = bitLen/8;      // How many BYTES do we have?
+  uint8_t byteLen = bitLen/8;      // How many BYTES do we have?
   if (bitLen%8 > 0) byteLen++;  // Make sure not to lose any partial byte values.
 
-  byte temp;
+  uint8_t temp;
 
   unsigned long retVal = 0;
 
   for (int i = 0; i < byteLen; i++)
   {
     retVal = retVal << 8;
-    temp = SPIXfer((byte)(value>>((byteLen-i-1)*8)));
+    temp = SPIXfer((uint8_t)(value>>((byteLen-i-1)*8)));
     retVal |= temp;
   }
 
@@ -309,23 +310,72 @@ long AutoDriver::xferParam(unsigned long value, byte bitLen)
   return retVal & mask;
 }
 
-byte AutoDriver::SPIXfer(byte data)
+uint8_t AutoDriver::SPIXfer(uint8_t data)
 {
+  //Necessary??
+  /*
   Serial.print("[");
   Serial.print(data, DEC);
   Serial.print("], ");
-  //Serial.print(" ");
-  byte dataPacket[_numBoards];
+  */
+
+  uint8_t dataPacket[_numBoards];
   int i;
   for (i=0; i < _numBoards; i++)
   {
     dataPacket[i] = 0;
   }
   dataPacket[_position] = data;
+
+  /*
   digitalWrite(_CSPin, LOW);
   _SPI->beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE3));
   _SPI->transfer(dataPacket, _numBoards);
   _SPI->endTransaction();
   digitalWrite(_CSPin, HIGH);
+  */
+
+  //Linux SPI Init == beginTransaction
+  if( _SPI->dev_open() != 0 )
+    {
+        printf("Error: %s\n", _SPI->strerror(_SPI->get_errno()));
+        exit(-1);
+    }
+
+
+    if( _SPI->set_mode(SPI_MODE_3) != 0 )
+    {
+        printf("Error: %s\n", _SPI->strerror(_SPI->get_errno()));
+        exit(-1);
+    }
+
+
+    if( _SPI->set_bits_per_word(16) != 0 )//How Many Bits Per Word?
+    {
+        printf("Error: %s\n", _SPI->strerror(_SPI->get_errno()));
+        exit(-1);
+    }
+
+
+    if( _SPI->set_max_speed_hz(46875) != 0 )// MaxSpeed: 4000000?
+    {
+        printf("Error: %s\n", _SPI->strerror(_SPI->get_errno()));
+        exit(-1);
+    }
+
+
+  //Linux SPI Transfer
+  ret = _SPI->write(&dataPacket, sizeof(dataPacket));
+
+  printf("send 100 ret == %d\n", ret);
+
+
+  ret = _SPI->read(&dataPacket, sizeof(dataPacket));
+
+
+  //Linux SPI Close == endTransaction
+  _SPI.dev_close();
+
+
   return dataPacket[_position];
 }

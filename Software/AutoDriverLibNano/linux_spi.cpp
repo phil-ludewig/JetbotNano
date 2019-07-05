@@ -74,10 +74,10 @@ Linux_SPI::~Linux_SPI()
 
 
 
-int Linux_SPI::dev_open(const char *spi_dev)
+int Linux_SPI::dev_open()
 {
 
-    if( !spi_dev )
+    if( !_devName )
     {
         _errno = ERROR_BAD_PARAM;
         return -1;
@@ -87,7 +87,7 @@ int Linux_SPI::dev_open(const char *spi_dev)
     dev_close(); //close old dev
 
 
-    _dev_fd = open(spi_dev, O_RDWR);
+    _dev_fd = open(_devName, O_RDWR);
     if( _dev_fd == -1 )
     {
         _errno = ERROR_CANT_OPEN_DEV;
