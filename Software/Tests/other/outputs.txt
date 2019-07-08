@@ -1,0 +1,61 @@
+###########################################################
+### Printout of "data" byte passed to SPIXfer function: ###
+###########################################################
+Note: the spaces between numbers mean that each of the numbers was transferred
+in separate SPIXfer function. A driver command calls this function several times
+CS is pulled low and high between each transfer (see SPIXfer function)
+
+board.move(FWD,100) / (FWD,200)
+BIN:  1000001 0 0 1100100 / 1000001 0 0 11001000
+DEC:  65 0 0 100 / 65 0 0 200
+HEX:  41 0 0 64 / 41 0 0 C8
+
+board.move(REV,100):
+BIN:  1000000 0 0 1100100
+DEC:  64 0 0 100
+HEX:  40 0 0 64
+
+board.getPos(): //After moving FWD 100 steps, byte never changes, which makes sense as the stepcount is returned in a different bit
+BIN:  100001 0 0 0
+DEC:  33 0 0 0
+HEX:  21 0 0 0
+
+board.goHome():
+BIN:  1110000 // From datasheet p.60 this command should be 01110000, seems like the last bit is dropped
+DEC:  112
+HEX:  70 // This corresponds to GO_HOME command (0x70)
+
+board.goTo(100):
+BIN:  1100000 0 0 1100100 // From datasheet p.58 this command should be 01100000, seems like the last bit is dropped
+DEC:  96 0 0 100
+HEX:  60 0 0 64
+
+##########################################
+# dSPINConfig data from SPIXfer printout #
+##########################################
+(Formatted for array) (DEC): (buffer length: )
+[54], [0], [22], [7], [54], [0], [22], [0], [7], [0], [33], [21], [1], [71], [40], [0], [0], [8], [4], [236], [5], [0], [54], [6],
+[0], [54], [56], [0], [0], [24], [47], [136], [19], [1], [56], [0], [0], [24], [63], [136], [56], [0], [0], [24], [63], [136], [56],
+[0], [0], [24], [63], [136], [56], [0], [0], [24], [63], [136], [56], [0], [0], [24], [63], [139], [11], [200], [12], [200], [10],
+[200], [9], [32],
+
+HEX:
+{36}, {0}, {16}, {0}, {36}, {0}, {16}, {0}, {7}, {0}, {21}, {15}, {1}, {47}, {28}, {0}, {0}, {8}, {4}, {EC}, {5}, {0}, {36}, {6}, {
+0}, {36}, {38}, {0}, {0}, {18}, {3}, {0}, {13}, {1}, {38}, {0}, {0}, {18}, {3C}, {0}, {38}, {0}, {0}, {18}, {0}, {80}, {38}, {0}, {
+0}, {18}, {0}, {0}, {38}, {0}, {0}, {18}, {0}, {0}, {38}, {0}, {0}, {18}, {0}, {B}, {B}, {C8}, {C}, {C8}, {A}, {C8}, {9}, {20}
+
+
+##################
+### _numBoards ###
+##################
+Number of board objects. Equals number of declared boards
+
+
+##################
+### dataPacket ###
+##################
+dataPacket is a _numBoards*4 matrix containing the data byte from earlier.
+Might be split up though in several SPIXfer commands! Check further.
+Example:
+dataPacket = [  [65,0,0,200]
+                [65,0,0,200]  ]
