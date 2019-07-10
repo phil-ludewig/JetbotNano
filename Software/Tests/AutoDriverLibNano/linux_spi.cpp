@@ -57,11 +57,11 @@
 
 
 
-Linux_SPI::Linux_SPI() :
+Linux_SPI::Linux_SPI(const char * devName) :
     _errno(ERROR_DEV_NOT_OPEN),
     _dev_fd(-1)
 {
-
+    _devName = devName;
     memset(&_spi_tr, 0, sizeof(struct spi_ioc_transfer));
 }
 

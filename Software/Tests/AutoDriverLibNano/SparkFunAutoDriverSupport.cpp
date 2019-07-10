@@ -1,6 +1,8 @@
 #include "SparkFunAutoDriver.h"
 #include "linux_spi.h"
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 // AutoDriverSupport.cpp - Contains utility functions for converting real-world
 //  units (eg, steps/s) to values usable by the dsPIN controller. These are all
@@ -350,14 +352,14 @@ uint8_t AutoDriver::SPIXfer(uint8_t data)
     }
 
 
-    if( _SPI->set_bits_per_word(16) != 0 )//How Many Bits Per Word?
+    if( _SPI->set_bits_per_word(8) != 0 )//How Many Bits Per Word?
     {
         printf("Error: %s\n", _SPI->strerror(_SPI->get_errno()));
         exit(-1);
     }
 
 
-    if( _SPI->set_max_speed_hz(46875) != 0 )// MaxSpeed: 4000000?
+    if( _SPI->set_max_speed_hz(3900000) != 0 )// MaxSpeed: 4000000?
     {
         printf("Error: %s\n", _SPI->strerror(_SPI->get_errno()));
         exit(-1);
@@ -365,16 +367,17 @@ uint8_t AutoDriver::SPIXfer(uint8_t data)
 
 
   //Linux SPI Transfer
+  int ret;
   ret = _SPI->write(&dataPacket, sizeof(dataPacket));
 
   printf("send 100 ret == %d\n", ret);
 
 
-  ret = _SPI->read(&dataPacket, sizeof(dataPacket));
+  //ret = _SPI->read(&dataPacket, sizeof(dataPacket));
 
 
   //Linux SPI Close == endTransaction
-  _SPI.dev_close();
+  _SPI->dev_close();
 
 
   return dataPacket[_position];
