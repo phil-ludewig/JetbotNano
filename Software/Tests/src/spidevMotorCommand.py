@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+import spidev
+import time
+import RPi.GPIO as GPIO
+
+# Test example of sparkfun autodriver dSPINConfig and move command
+ 
+# Learnings:
+# Setting up CS pin as GPIO interferes with spidev
+# Only send individual bytes to autodriver with spi.xfer, no arrays!
+
+reset_pin =  31
+cs_pin = 24
+
+#GPIO.cleanup()
+GPIO.setmode(GPIO.BOARD)  # BOARD pin-numbering scheme
+
+GPIO.setup(reset_pin, GPIO.OUT)
+
+time.sleep(2) # let autodriver initialize
+GPIO.output(reset_pin, GPIO.LOW) # reset autodriver
+GPIO.output(reset_pin, GPIO.HIGH)
+
+spi = spidev.SpiDev()
+#spi.close()
+spi.open(0,0) #port 0,cs 0
+spi.max_speed_hz = 3900000 # 3,9MHz
+spi.mode = 0b11 # mode 3
+
+#print("Bits per Word: ", spi.bits_per_word)
+#print("cs_high: ", spi.cshigh)
+#print("No CS: ", spi.no_cs)
+#print("MSBFIRST: ", spi.lsbfirst)
+
+
+
+#spi.cshigh = False # false means CS=high (= chip "de"-selected)
+#spi.cshigh = True
+
+
+# dSPINConfig command:
+configBuf = [0x36,0x00,0x16,0x00,0x36,0x00,0x16,0x00,0x07,0x00,0x21,0x15,0x01,0x47,0x28,0x00,0x00,0x08,0x04,0xEC, 0x05,0x00,0x36,0x06,0x00,0x36,0x38,0x00,0x00,0x18,0x3,0x00,0x13,0x01,0x38,0x00,0x00,0x18,0x3C,0x00,0x38,0x00,0x00,0x18,0x00,0x80,0x38,0x00,0x00,0x18,0x00,0x00,0x38,0x00,0x00,0x18,0x00,0x00,0x38,0x00,0x00,0x18,0x00,0x0B,0x0B,0xC8,0x0C,0xC8,0x0A,0xC8,0x09,0x20]
+#spi.xfer(configBuf)
+
+for element in configBuf:
+	spi.xfer([element])
+
+# board.move(FWD,200) command:
+spi.xfer3([0x41])
+spi.xfer3([0x00])
+spi.xfer3([0x00])
+spi.xfer3([0xC8])
+
+print("Done.")
+
+
+spi.close()
+GPIO.cleanup()
