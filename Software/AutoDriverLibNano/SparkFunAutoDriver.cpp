@@ -5,7 +5,7 @@
 int AutoDriver::_numBoards;
 
 // Constructors
-AutoDriver::AutoDriver(int position, int CSPin, int resetPin, int busyPin)
+AutoDriver::AutoDriver(int position, jetsonGPIO CSPin, jetsonGPIO resetPin, jetsonGPIO busyPin)
 {
   _CSPin = CSPin;
   _position = position;
@@ -15,7 +15,7 @@ AutoDriver::AutoDriver(int position, int CSPin, int resetPin, int busyPin)
   //_SPI = &SPI;
 }
 
-AutoDriver::AutoDriver(int position, int CSPin, int resetPin)
+AutoDriver::AutoDriver(int position, jetsonGPIO CSPin, jetsonGPIO resetPin)
 {
   _CSPin = CSPin;
   _position = position;

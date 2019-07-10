@@ -12,8 +12,8 @@ class AutoDriver
     // Constructors. We'll ALWAYS want a CS pin and a reset pin, but we may
     //  not want a busy pin. By using two constructors, we make it easy to
     //  allow that.
-    AutoDriver(int position, int CSPin, int resetPin, int busyPin);
-    AutoDriver(int position, int CSPin, int resetPin);
+    AutoDriver(int position, jetsonGPIO CSPin, jetsonGPIO resetPin, jetsonGPIO busyPin);
+    AutoDriver(int position, jetsonGPIO CSPin, jetsonGPIO resetPin);
 
     void SPIPortConnect(Linux_SPI *SPIPort);
 
@@ -117,9 +117,9 @@ class AutoDriver
     float intSpdParse(unsigned long stepsPerSec);
     float spdParse(unsigned long stepsPerSec);
 
-    int _CSPin;
-    int _resetPin;
-    int _busyPin;
+    jetsonGPIO _CSPin;
+    jetsonGPIO _resetPin;
+    jetsonGPIO _busyPin;
     int _position;
     static int _numBoards;
     Linux_SPI *_SPI;

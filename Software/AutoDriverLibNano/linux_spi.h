@@ -70,9 +70,9 @@ class Linux_SPI
         };
 
 
-         Linux_SPI(const char * devName){
-         _devName = devName:
-         };
+         Linux_SPI(const char * devName);
+
+         //Linux_SPI();
 
         ~Linux_SPI();
 
