@@ -30,6 +30,19 @@ BIN:  1100000 0 0 1100100 // From datasheet p.58 this command should be 01100000
 DEC:  96 0 0 100
 HEX:  60 0 0 64
 
+### Read commands: ###
+board.getStatus():
+HEX: 0xD0 0x00 0x00
+
+should return (according to sparkfun)
+BIN: 0000 0000 0010 1110 1000 1000
+DEC: 11912
+HEX: 0x2E88
+actual return (after dSPINConfig)
+BIN: 0000 0000 0111 1110 0000 0011
+DEC: 32259
+HEX: 0x7E03
+
 ##########################################
 # dSPINConfig data from SPIXfer printout #
 ##########################################
