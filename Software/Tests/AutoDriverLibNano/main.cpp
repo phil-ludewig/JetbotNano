@@ -118,7 +118,7 @@ int main()
 
     //cout << "Clean Up" << endl;
 
-    cleanup(); // close gpio and spi
+    cleanup(&spi_dev); // close gpio and spi
     gpioUnexport(resetPin);
 
     cout << "Done." << endl;
