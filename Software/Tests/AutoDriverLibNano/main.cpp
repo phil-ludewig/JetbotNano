@@ -9,6 +9,37 @@ using namespace std;
 AutoDriver boardA(0, gpio19, gpio200);
 Linux_SPI spi_dev("/dev/spidev0.0");
 
+void spiConfig(){
+
+  if( _SPI->dev_open() != 0 )
+    {
+        printf("Error: %s\n", _SPI->strerror(_SPI->get_errno()));
+        exit(-1);
+    }
+
+
+    if( _SPI->set_mode(SPI_MODE_3) != 0 )
+    {
+        printf("Error: %s\n", _SPI->strerror(_SPI->get_errno()));
+        exit(-1);
+    }
+
+
+    if( _SPI->set_bits_per_word(8) != 0 )//How Many Bits Per Word?
+    {
+        printf("Error: %s\n", _SPI->strerror(_SPI->get_errno()));
+        exit(-1);
+    }
+
+
+    if( _SPI->set_max_speed_hz(3900000) != 0 )// MaxSpeed: 4000000?
+    {
+        printf("Error: %s\n", _SPI->strerror(_SPI->get_errno()));
+        exit(-1);
+    }
+
+}
+
 void dSPINConfig()
 {
   boardA.SPIPortConnect(&spi_dev);      // Before doing anything else, we need to
@@ -16,7 +47,7 @@ void dSPINConfig()
 
   boardA.configSyncPin(BUSY_PIN, 0);// BUSY pin low during operations;
                                     //  second paramter ignored.
-  boardA.configStepMode(STEP_FS_64);   // 0 microsteps per step
+  boardA.configStepMode(STEP_FS);   // 0 microsteps per step
   boardA.setMaxSpeed(1000);        // 10000 steps/s max
   boardA.setFullSpeed(10000);       // microstep below 10000 steps/s
   boardA.setAcc(1);             // accelerate at 10000 steps/s/s
@@ -75,10 +106,12 @@ int main()
     dSPINConfig();
 
     cout << "Execute Move Command" << endl;
-    boardA.move(FWD, 200*64);
+    boardA.move(FWD, 200);
 
     cout << "Clean Up" << endl;
+
     gpioUnexport(resetPin);
+    _SPI->dev_close();
 
     return 0;
 }

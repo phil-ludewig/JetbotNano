@@ -314,12 +314,6 @@ long AutoDriver::xferParam(unsigned long value, uint8_t bitLen)
 
 uint8_t AutoDriver::SPIXfer(uint8_t data)
 {
-  //Necessary??
-  /*
-  Serial.print("[");
-  Serial.print(data, DEC);
-  Serial.print("], ");
-  */
 
   uint8_t dataPacket[_numBoards];
   int i;
@@ -337,6 +331,7 @@ uint8_t AutoDriver::SPIXfer(uint8_t data)
   digitalWrite(_CSPin, HIGH);
   */
 
+  /*
   //Linux SPI Init == beginTransaction
   if( _SPI->dev_open() != 0 )
     {
@@ -365,19 +360,20 @@ uint8_t AutoDriver::SPIXfer(uint8_t data)
         exit(-1);
     }
 
+    */
 
   //Linux SPI Transfer
   int ret;
   ret = _SPI->write(&dataPacket, sizeof(dataPacket));
 
-  printf("send 100 ret == %d\n", ret);
+  /*printf("send 100 ret == %d\n", ret);*/
 
 
   //ret = _SPI->read(&dataPacket, sizeof(dataPacket));
 
 
   //Linux SPI Close == endTransaction
-  _SPI->dev_close();
+  //_SPI->dev_close();
 
 
   return dataPacket[_position];
