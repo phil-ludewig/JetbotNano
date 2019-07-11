@@ -9,7 +9,7 @@ using namespace std;
 AutoDriver boardA(0, gpio19, gpio200);
 Linux_SPI spi_dev("/dev/spidev0.0");
 
-void spiInit()
+void spiInit(Linux_SPI *spi_dev)
 {
 
   if( spi_dev->dev_open() != 0 )
@@ -51,12 +51,12 @@ void dSPINConfig()
   //boardB.SPIPortConnect(&spi_dev);
 
   boardA.configSyncPin(BUSY_PIN, 0);        // Busy pin low during operation
-  boardA.configStepMode(STEP_FS);           // Step mode; FS disables microstepping for any microstepping functions!
-  boardA.setMaxSpeed(1000);                 // [steps/s]
-  boardA.setMinSpeed(100);                  // [steps/s] autom. 0, if setFullSpeed() is used
-  boardA.setFullSpeed(10000);               // [steps/s] use smooth microsteps below this value (disabled if step mode = FS)
-  boardA.setAcc(1);                         // [steps/s/s] no acc. curve above max acc. (=29802)
-  boardA.setDec(1);
+  boardA.configStepMode(STEP_FS_128);       // Step mode; FS disables microstepping for any microstepping functions!
+  boardA.setMaxSpeed(380);                  // [steps/s] (stalling above 380 with current motor)
+  boardA.setMinSpeed(1);                    // [steps/s] autom. 0, if setFullSpeed() is used
+  boardA.setFullSpeed(5000);                // [steps/s] use smooth microsteps below this value (disabled if step mode = FS)
+  boardA.setAcc(200);                       // [steps/s/s] no acc. curve above max acc. (=29802)
+  boardA.setDec(200);
   boardA.setSlewRate(SR_530V_us);           // 180/290/530; higher value increases torque at higher speeds -> more elm-interference
   boardA.setOCThreshold(OC_750mA);          // OC threshold 750mA
   boardA.setOCShutdown(OC_SD_ENABLE);       // Shutdown driver and motor on overcurrent
@@ -64,10 +64,10 @@ void dSPINConfig()
   boardA.setVoltageComp(VS_COMP_DISABLE);   // Compensates fluctuations in input voltage for more consistent motor behavior
   boardA.setSwitchMode(SW_HARD_STOP);       // Reaction to optional switch input
   boardA.setOscMode(INT_16MHZ_OSCOUT_16MHZ);// Pass internal clock from board1 to board2 for synchronized movements (for board2: EXT_16MHZ_OSCOUT_INVERT)
-  boardA.setAccKVAL(200);                   // Current scaling [0-255] = (0-100%)
-  boardA.setDecKVAL(200);
-  boardA.setRunKVAL(200);
-  boardA.setHoldKVAL(1);                    // Motor holding current (keep low)
+  boardA.setAccKVAL(255);                   // Current scaling [0-255] = (0-100%)
+  boardA.setDecKVAL(255);
+  boardA.setRunKVAL(255);
+  boardA.setHoldKVAL(30);                    // Motor holding current (keep low)
 
 
 }
@@ -84,14 +84,15 @@ int main()
     gpioSetValue(resetPin, on);
 
     //cout << "Configure Autodriver Board" << endl;
-    spiInit();
+    spiInit(&spi_dev);
     dSPINConfig();
 
     //cout << "Execute Move Command" << endl;
-    boardA.move(FWD, 200);
+    boardA.move(FWD, 200*128);
 
     //cout << "Clean Up" << endl;
 
+    cleanup(); // close gpio and spi
     gpioUnexport(resetPin);
     spi_dev->dev_close();
 

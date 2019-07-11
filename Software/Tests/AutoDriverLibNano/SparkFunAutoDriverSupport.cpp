@@ -324,6 +324,7 @@ uint8_t AutoDriver::SPIXfer(uint8_t data)
   dataPacket[_position] = data;
 
   /*
+  // original SPI TX:
   digitalWrite(_CSPin, LOW);
   _SPI->beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE3));
   _SPI->transfer(dataPacket, _numBoards);
@@ -331,50 +332,13 @@ uint8_t AutoDriver::SPIXfer(uint8_t data)
   digitalWrite(_CSPin, HIGH);
   */
 
-  /*
-  //Linux SPI Init == beginTransaction
-  if( _SPI->dev_open() != 0 )
-    {
-        printf("Error: %s\n", _SPI->strerror(_SPI->get_errno()));
-        exit(-1);
-    }
-
-
-    if( _SPI->set_mode(SPI_MODE_3) != 0 )
-    {
-        printf("Error: %s\n", _SPI->strerror(_SPI->get_errno()));
-        exit(-1);
-    }
-
-
-    if( _SPI->set_bits_per_word(8) != 0 )//How Many Bits Per Word?
-    {
-        printf("Error: %s\n", _SPI->strerror(_SPI->get_errno()));
-        exit(-1);
-    }
-
-
-    if( _SPI->set_max_speed_hz(3900000) != 0 )// MaxSpeed: 4000000?
-    {
-        printf("Error: %s\n", _SPI->strerror(_SPI->get_errno()));
-        exit(-1);
-    }
-
-    */
-
   //Linux SPI Transfer
   int ret;
   ret = _SPI->write(&dataPacket, sizeof(dataPacket));
 
   /*printf("send 100 ret == %d\n", ret);*/
 
-
   //ret = _SPI->read(&dataPacket, sizeof(dataPacket));
-
-
-  //Linux SPI Close == endTransaction
-  //_SPI->dev_close();
-
 
   return dataPacket[_position];
 }
