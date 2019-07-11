@@ -92,6 +92,11 @@ void dSPINConfig()
 
 }
 
+void cleanup(Linux_SPI *spi_dev)
+{
+  spi_dev->dev_close();
+}
+
 int main()
 {
     //cout << "Configuring GPIO Pins" << endl;
@@ -115,7 +120,6 @@ int main()
 
     cleanup(); // close gpio and spi
     gpioUnexport(resetPin);
-    spi_dev->dev_close();
 
     cout << "Done." << endl;
 
