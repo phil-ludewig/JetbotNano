@@ -3,11 +3,12 @@
 #include "SparkFunAutoDriver.h"
 #include "jetsonGPIO.c"
 #include "linux_spi.h"
+#include <unistd.h> // for time
 
 using namespace std;
 
-AutoDriver boardA(0, gpio19, gpio200);
-AutoDriver boardB(1, gpio19, gpio200); // (pos, CS, RESET)
+AutoDriver boardA(1, gpio19, gpio200); // right wheel (REV = forward movement)
+AutoDriver boardB(0, gpio19, gpio200); // left wheel (FWD = forward movement)
 Linux_SPI spi_dev("/dev/spidev0.0");
 
 void spiInit(Linux_SPI *spi_dev)
@@ -113,8 +114,10 @@ int main()
     dSPINConfig();
 
     //cout << "Execute Move Command" << endl;
-    boardA.move(FWD, 200*128);
+    boardA.move(REV, 200*128);
     boardB.move(FWD, 200*128);
+
+    usleep(4000*1000); // [microseconds]
 
     //cout << "Clean Up" << endl;
 
