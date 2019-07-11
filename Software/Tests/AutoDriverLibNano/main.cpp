@@ -7,6 +7,7 @@
 using namespace std;
 
 AutoDriver boardA(0, gpio19, gpio200);
+AutoDriver boardB(1, gpio19, gpio200); // (pos, CS, RESET)
 Linux_SPI spi_dev("/dev/spidev0.0");
 
 void spiInit(Linux_SPI *spi_dev)
@@ -48,7 +49,6 @@ void dSPINConfig()
   // https://learn.sparkfun.com/tutorials/getting-started-with-the-autodriver---v13?_ga=2.186722024.1189833582.1562587519-1543984250.1560589149
 
   boardA.SPIPortConnect(&spi_dev);
-  //boardB.SPIPortConnect(&spi_dev);
 
   boardA.configSyncPin(BUSY_PIN, 0);        // Busy pin low during operation
   boardA.configStepMode(STEP_FS_128);       // Step mode; FS disables microstepping for any microstepping functions!
@@ -70,6 +70,26 @@ void dSPINConfig()
   boardA.setHoldKVAL(30);                    // Motor holding current (keep low)
 
 
+  boardB.SPIPortConnect(&spi_dev);
+  boardB.configSyncPin(BUSY_PIN, 0);        // Busy pin low during operation
+  boardB.configStepMode(STEP_FS_128);       // Step mode; FS disables microstepping for any microstepping functions!
+  boardB.setMaxSpeed(380);                  // [steps/s] (stalling above 380 with current motor)
+  boardB.setMinSpeed(1);                    // [steps/s] autom. 0, if setFullSpeed() is used
+  boardB.setFullSpeed(5000);                // [steps/s] use smooth microsteps below this value (disabled if step mode = FS)
+  boardB.setAcc(200);                       // [steps/s/s] no acc. curve above max acc. (=29802)
+  boardB.setDec(200);
+  boardB.setSlewRate(SR_530V_us);           // 180/290/530; higher value increases torque at higher speeds -> more elm-interference
+  boardB.setOCThreshold(OC_750mA);          // OC threshold 750mA
+  boardB.setOCShutdown(OC_SD_ENABLE);       // Shutdown driver and motor on overcurrent
+  boardB.setPWMFreq(PWM_DIV_2, PWM_MUL_2);  // 31.25kHz PWM freq
+  boardB.setVoltageComp(VS_COMP_DISABLE);   // Compensates fluctuations in input voltage for more consistent motor behavior
+  boardB.setSwitchMode(SW_HARD_STOP);       // Reaction to optional switch input
+  boardB.setOscMode(EXT_16MHZ_OSCOUT_INVERT);// Pass internal clock from board1 to board2 for synchronized movements (for board2: EXT_16MHZ_OSCOUT_INVERT)
+  boardB.setAccKVAL(255);                   // Current scaling [0-255] = (0-100%)
+  boardB.setDecKVAL(255);
+  boardB.setRunKVAL(255);
+  boardB.setHoldKVAL(30);
+
 }
 
 int main()
@@ -89,6 +109,7 @@ int main()
 
     //cout << "Execute Move Command" << endl;
     boardA.move(FWD, 200*128);
+    boardB.move(FWD, 200*128);
 
     //cout << "Clean Up" << endl;
 
