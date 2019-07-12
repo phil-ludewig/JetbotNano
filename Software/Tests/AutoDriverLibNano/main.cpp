@@ -127,7 +127,8 @@ void turn(float degrees)
 
 void drive(float dist)  // dist [cm]
 {
-    int steps = fabs(distPerStep / dist)
+    int steps = fabs(distPerStep / dist);
+
     if(distance >= 0)
     {
       rightMotor(REV, steps);
@@ -163,7 +164,7 @@ int main()
     usleep(1000*1000);
     drive(30);
     usleep(2000*1000);
-    turn(90)
+    turn(90);
     usleep(1000*1000);;
     drive(50);
     usleep(3000*1000);
