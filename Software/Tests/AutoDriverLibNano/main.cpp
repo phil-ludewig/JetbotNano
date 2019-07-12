@@ -4,6 +4,7 @@
 #include "jetsonGPIO.c"
 #include "linux_spi.h"
 #include <unistd.h> // for time
+#include <math.h>
 
 using namespace std;
 
@@ -15,6 +16,8 @@ Linux_SPI spi_dev("/dev/spidev0.0");
 #define WHEELDIAM 9.60    // [cm]
 #define STEPSPERREV 200
 #define PI 3.14159265
+
+float distPerStep = WHEELDIAM*PI / (STEPSPERREV*128); // [cm]
 
 void spiInit(Linux_SPI *spi_dev)
 {
@@ -106,11 +109,10 @@ void cleanup(Linux_SPI *spi_dev)
 void turn(float degrees)
 {
     // positive stepcount is clockwise rotation
-    float distPerStep = WHEELDIAM*PI / (STEPSPERREV*128);
     float distToDrive = (degrees / 360) * (WHEELBASE*PI);
-    int steps = distToDrive / distPerStep;
+    int steps = fabs(distToDrive / distPerStep);
 
-    if(steps >= 0)  // clockwise rotation
+    if(degrees >= 0)  // clockwise rotation
     {
       rightMotor.move(FWD, steps);
       leftMotor.move(FWD, steps);
@@ -121,6 +123,21 @@ void turn(float degrees)
       leftMotor.move(REV, steps);
     }
 
+}
+
+void drive(float dist)  // dist [cm]
+{
+    int steps = fabs(distPerStep / dist)
+    if(distance >= 0)
+    {
+      rightMotor(REV, steps);
+      leftMotor(FWD, steps);
+    }
+    else
+    {
+      rightMotor(FWD, steps);
+      leftMotor(REV, steps);
+    }
 }
 
 int main()
@@ -139,13 +156,24 @@ int main()
     dSPINConfig();
 
     //cout << "Execute Move Command" << endl;
-    //rightMotor.move(REV, 200*128);
-    //leftMotor.move(FWD, 200*128);
 
+    drive(50);
+    usleep(3000*1000);
     turn(90);
-    usleep(4000*1000); // [microseconds]
+    usleep(1000*1000);
+    drive(30);
+    usleep(2000*1000);
+    turn(90)
+    usleep(1000*1000);;
+    drive(50);
+    usleep(3000*1000);
+    turn(90);
+    usleep(1000*1000);
+    drive(30);
+    usleep(2000*1000);
+    turn(90);
+    usleep(3000*1000); // [microseconds]
 
-    turn(-90);
     //cout << "Clean Up" << endl;
 
     cleanup(&spi_dev); // close gpio and spi
