@@ -110,34 +110,34 @@ void turn(float degrees)
 {
     // positive stepcount is clockwise rotation
     float distToDrive = (degrees / 360) * (WHEELBASE*PI);
-    int steps = fabs(distToDrive / distPerStep);
+    int steps = distToDrive / distPerStep;
 
-    if(degrees >= 0)  // clockwise rotation
+    if(steps >= 0)  // clockwise rotation
     {
       rightMotor.move(FWD, steps);
       leftMotor.move(FWD, steps);
     }
     else
     {
-      rightMotor.move(REV, steps);
-      leftMotor.move(REV, steps);
+      rightMotor.move(REV, fabs(steps));
+      leftMotor.move(REV, fabs(steps));
     }
 
 }
 
 void drive(float dist)  // dist [cm]
 {
-    int steps = fabs(distPerStep / dist);
+    int steps = distPerStep / dist;
 
-    if(distance >= 0)
+    if(steps >= 0)  // drive forward
     {
       rightMotor(REV, steps);
       leftMotor(FWD, steps);
     }
     else
     {
-      rightMotor(FWD, steps);
-      leftMotor(REV, steps);
+      rightMotor(FWD, fabs(steps));
+      leftMotor(REV, fabs(steps));
     }
 }
 
