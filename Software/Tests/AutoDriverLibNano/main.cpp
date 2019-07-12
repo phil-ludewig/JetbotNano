@@ -13,6 +13,8 @@ Linux_SPI spi_dev("/dev/spidev0.0");
 
 #define WHEELBASE 23.44   // [cm]
 #define WHEELDIAM 9.60    // [cm]
+#define STEPSPERREV 200
+#define PI 3.14159265
 
 void spiInit(Linux_SPI *spi_dev)
 {
