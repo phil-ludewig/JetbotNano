@@ -129,6 +129,8 @@ void drive(float dist)  // dist [cm]
 {
     int steps = distPerStep / dist;
 
+    cout << steps << endl;
+
     if(steps >= 0)  // drive forward
     {
       rightMotor.move(REV, steps);
@@ -158,20 +160,20 @@ int main()
 
     //cout << "Execute Move Command" << endl;
 
+    drive(150);
+    usleep(6000*1000);
+    turn(90);
+    usleep(1500*1000);
     drive(50);
     usleep(3000*1000);
     turn(90);
-    usleep(1000*1000);
-    drive(30);
-    usleep(2000*1000);
+    usleep(1500*1000);;
+    drive(150);
+    usleep(6000*1000);
     turn(90);
-    usleep(1000*1000);;
+    usleep(1500*1000);
     drive(50);
     usleep(3000*1000);
-    turn(90);
-    usleep(1000*1000);
-    drive(30);
-    usleep(2000*1000);
     turn(90);
     usleep(3000*1000); // [microseconds]
 
