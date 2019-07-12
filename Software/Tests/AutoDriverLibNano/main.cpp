@@ -131,13 +131,13 @@ void drive(float dist)  // dist [cm]
 
     if(steps >= 0)  // drive forward
     {
-      rightMotor(REV, steps);
-      leftMotor(FWD, steps);
+      rightMotor.move(REV, steps);
+      leftMotor.move(FWD, steps);
     }
     else
     {
-      rightMotor(FWD, fabs(steps));
-      leftMotor(REV, fabs(steps));
+      rightMotor.move(FWD, fabs(steps));
+      leftMotor.move(REV, fabs(steps));
     }
 }
 
