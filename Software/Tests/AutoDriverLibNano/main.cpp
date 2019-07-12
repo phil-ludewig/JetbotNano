@@ -127,7 +127,7 @@ void turn(float degrees)
 
 void drive(float dist)  // dist [cm]
 {
-    int steps = distPerStep / dist;
+    int steps = dist / distPerStep;
 
     cout << steps << endl;
 
