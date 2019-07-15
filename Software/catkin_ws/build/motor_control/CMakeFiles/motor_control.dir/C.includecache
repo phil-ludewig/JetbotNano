@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/phil/JetbotNano/Software/catkin_ws/src/motor_control/include/motor_control/jetsonGPIO.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+errno.h
+-
+unistd.h
+-
+fcntl.h
+-
+poll.h
+-
+jetsonGPIO.h
+/home/phil/JetbotNano/Software/catkin_ws/src/motor_control/include/motor_control/jetsonGPIO.h
+
+/home/phil/JetbotNano/Software/catkin_ws/src/motor_control/include/motor_control/jetsonGPIO.h
+

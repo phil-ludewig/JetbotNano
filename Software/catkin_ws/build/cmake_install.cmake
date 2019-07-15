@@ -131,6 +131,7 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/phil/JetbotNano/Software/catkin_ws/build/gtest/cmake_install.cmake")
+  include("/home/phil/JetbotNano/Software/catkin_ws/build/motor_control/cmake_install.cmake")
 
 endif()
 
