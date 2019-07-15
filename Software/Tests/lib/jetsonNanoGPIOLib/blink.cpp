@@ -17,7 +17,7 @@ int main(int argc, char *argv[]){
 
     cout << "Blink started." << endl;
 
-    jetsonNanoGPIONumber ledPin = gpio79;
+    jetsonNanoGPIONumber ledPin = gpio19;
     gpioExport(ledPin); // make available in user space
     gpioSetDirection(ledPin,outputPin);
 

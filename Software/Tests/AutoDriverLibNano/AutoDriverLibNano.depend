@@ -1,0 +1,54 @@
+# depslib dependency file v1.0
+1562250519 source:/home/ted/Robots/JetbotNano/Software/AutoDriverLibNano/jetsonGPIO.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	<unistd.h>
+	<fcntl.h>
+	<poll.h>
+	"jetsonGPIO.h"
+
+1562256959 /home/ted/Robots/JetbotNano/Software/AutoDriverLibNano/jetsonGPIO.h
+
+1562755405 source:/home/ted/Robots/JetbotNano/Software/AutoDriverLibNano/linux_spi.cpp
+	<stdio.h>
+	<unistd.h>
+	<string.h>
+	<dirent.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<fcntl.h>
+	<linux/types.h>
+	<linux/spi/spidev.h>
+	<sys/ioctl.h>
+	"linux_spi.h"
+
+1562755372 /home/ted/Robots/JetbotNano/Software/AutoDriverLibNano/linux_spi.h
+	<stdint.h>
+	<linux/spi/spidev.h>
+
+1562254050 source:/home/ted/Robots/JetbotNano/Software/AutoDriverLibNano/main.cpp
+	<iostream>
+
+1562257295 source:/home/ted/Robots/JetbotNano/Software/AutoDriverLibNano/SparkFunAutoDriver.cpp
+	"linux_spi.h"
+	"jetsonGPIO.h"
+	"SparkFunAutoDriver.h"
+
+1562762804 /home/ted/Robots/JetbotNano/Software/AutoDriverLibNano/SparkFunAutoDriver.h
+	"jetsonGPIO.h"
+	"linux_spi.h"
+	<cstdint>
+	"SparkFundSPINConstants.h"
+
+1562250519 /home/ted/Robots/JetbotNano/Software/AutoDriverLibNano/SparkFundSPINConstants.h
+
+1562313960 source:/home/ted/Robots/JetbotNano/Software/AutoDriverLibNano/SparkFunAutoDriverCommands.cpp
+	"SparkFunAutoDriver.h"
+	<cstdint>
+
+1562314536 source:/home/ted/Robots/JetbotNano/Software/AutoDriverLibNano/SparkFunAutoDriverConfig.cpp
+	"SparkFunAutoDriver.h"
+	<cstdint>
+
