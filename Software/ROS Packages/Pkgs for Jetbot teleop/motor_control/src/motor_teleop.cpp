@@ -27,7 +27,7 @@ Linux_SPI spi_dev("/dev/spidev0.0");
 #define PI 3.14159265
 
 #define LINEARSCALE 5000
-#define ANGULARSCALE 2000
+#define ANGULARSCALE 500
 
 bool motorInitFlag = true;
 
@@ -187,6 +187,13 @@ void cmd_vel_callback(const geometry_msgs::Twist msg)
   float speedRightWheel;
   float speedLeftWheel;
 
+  if(speedRightWheel && speedLeftWheel == 0)
+  {
+    rightMotor.hardStop();
+    leftMotor.hardStop();
+    ROS_INFO("Hard stop.");
+  }
+
   if(angular_z >= 0) // counterclockwise
   {
     speedRightWheel = linear_x*LINEARSCALE + angular_z*ANGULARSCALE;
@@ -194,16 +201,11 @@ void cmd_vel_callback(const geometry_msgs::Twist msg)
   }
   else
   {
-    speedRightWheel = linear_x*LINEARSCALE - angular_z*ANGULARSCALE;
-    speedLeftWheel = linear_x*LINEARSCALE + angular_z*ANGULARSCALE;
+    speedRightWheel = linear_x*LINEARSCALE + angular_z*ANGULARSCALE;
+    speedLeftWheel = linear_x*LINEARSCALE - angular_z*ANGULARSCALE;
   }
 
-  if(speedRightWheel && speedLeftWheel == 0)
-  {
-    rightMotor.hardStop();
-    leftMotor.hardStop();
-    ROS_INFO("Hard stop.");
-  }
+
 
   if(speedRightWheel > 0) // FWD
     rightMotor.run(REV, speedRightWheel); // directions switched on right motor
