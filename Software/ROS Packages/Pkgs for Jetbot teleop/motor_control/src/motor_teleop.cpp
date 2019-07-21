@@ -26,8 +26,8 @@ Linux_SPI spi_dev("/dev/spidev0.0");
 #define STEPSPERREV 200
 #define PI 3.14159265
 
-#define LINEARSCALE 5000
-#define ANGULARSCALE 500
+#define LINEARSCALE 2000
+#define ANGULARSCALE 100
 
 bool motorInitFlag = true;
 
