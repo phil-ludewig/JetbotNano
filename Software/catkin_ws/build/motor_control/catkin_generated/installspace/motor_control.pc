@@ -1,8 +1,0 @@
-prefix=/home/phil/JetbotNano/Software/catkin_ws/install
-
-Name: motor_control
-Description: Description of motor_control
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/phil/JetbotNano/Software/catkin_ws/install/lib 
-Requires: 
