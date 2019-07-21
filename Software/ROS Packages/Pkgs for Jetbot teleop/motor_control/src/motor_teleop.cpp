@@ -26,7 +26,10 @@ Linux_SPI spi_dev("/dev/spidev0.0");
 #define STEPSPERREV 200
 #define PI 3.14159265
 
-bool flag = true;
+#define LINEARSCALE 1000
+#define ANGULARSCALE 100
+
+bool motorInitFlag = true;
 
 float distPerStep = WHEELDIAM*PI / (STEPSPERREV*128); // [cm]
 
@@ -117,7 +120,7 @@ void cleanup(Linux_SPI *spi_dev)
     spi_dev->dev_close();
 }
 
-void turn(float degrees)
+void turnDegrees(float degrees)
 {
     // positive stepcount is clockwise rotation
     float distToDrive = (degrees / 360) * (WHEELBASE*PI);
@@ -136,7 +139,7 @@ void turn(float degrees)
 
 }
 
-void drive(float dist)  // dist [cm]
+void driveDistance(float dist)  // dist [cm]
 {
     int steps = dist / distPerStep;
 
@@ -154,12 +157,8 @@ void drive(float dist)  // dist [cm]
     }
 }
 
-
-
-int motorTest()
+int driverInit()
 {
-    //cout << "Configuring GPIO Pins" << endl;
-
     jetsonGPIO resetPin = gpio200 ;
     gpioExport(resetPin) ;
     gpioSetDirection(resetPin, outputPin) ;
@@ -167,49 +166,48 @@ int motorTest()
     gpioSetValue(resetPin, off); // Reset autodriver
     gpioSetValue(resetPin, on);
 
-    //cout << "Configure Autodriver Board" << endl;
     spiInit(&spi_dev);
     dSPINConfig();
 
-    //cout << "Execute Move Command" << endl;
-
-    drive(150);
-    usleep(4000*1000);
-    turn(90);
-    usleep(1500*1000);
-    drive(50);
-    usleep(2000*1000);
-    turn(90);
-    usleep(1500*1000);;
-    drive(150);
-    usleep(4000*1000);
-    turn(90);
-    usleep(1500*1000);
-    drive(50);
-    usleep(2000*1000);
-    turn(90);
-    usleep(3000*1000); // [microseconds]
-
-    //cout << "Clean Up" << endl;
-
-    cleanup(&spi_dev); // close gpio and spi
-    gpioUnexport(resetPin);
-
-    cout << "Done." << endl;
-
+    //cleanup(&spi_dev); // close gpio and spi
+    //gpioUnexport(resetPin);
 }
 
-
-void control_motor(const geometry_msgs::Twist msg)
+// motor control
+void cmd_vel_callback(const geometry_msgs::Twist msg)
 {
-  //ROS_INFO("Teleop received!");
-  //float linear_x = msg.linear.x;
-  //ROS_INFO_STREAM(linear_x);
-  if(flag){
-    motorTest();
-    flag = false;
+  if(motorInitFlag){
+    motorsInit();
+    ROS_INFO("Motors initialized.");
+    motorInitFlag = false;
   }
+
+  float linear_x = msg.linear.x; // forward/backwards (max +-0.22)
+  float angular_z = msg.angular.z; // (max +-2.84) negative = clockwise rotation
+
+  float speedRightWheel = linear_x*LINEARSCALE;
+  float speedLeftWheel = linear_x*LINEARSCALE;
+
+  if(speedRightWheel || speedLeftWheel == 0)
+  {
+    rightMotor.hardStop();
+    leftMotor.hardStop();
+    ROS_INFO("Hard stop.")
+  }
+
+  if(speedRightWheel > 0) // FWD
+    rightMotor.run(REV, speedRightWheel); // directions switched on right motor
+  else
+    rightMotor.run(FWD, speedRightWheel);
+
+  if(speedLeftWheel > 0) // FWD
+    leftMotor.run(FWD, speedLeftWheel);
+  else
+    leftMotor.run(REV, speedLeftWheel);
+
 }
+
+
 
 int main(int argc, char** argv)
 {
@@ -217,7 +215,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "motor_teleop");
     ros::NodeHandle n;
 
-    ros::Subscriber teleop_sub = n.subscribe("/cmd_vel", 10, control_motor);
+    ros::Subscriber teleop_sub = n.subscribe("/cmd_vel", 10, cmd_vel_callback);
 
     // Handle ROS communication events
     ros::spin();
