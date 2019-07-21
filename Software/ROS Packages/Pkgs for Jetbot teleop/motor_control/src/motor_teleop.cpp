@@ -26,8 +26,8 @@ Linux_SPI spi_dev("/dev/spidev0.0");
 #define STEPSPERREV 200
 #define PI 3.14159265
 
-#define LINEARSCALE 1000
-#define ANGULARSCALE 100
+#define LINEARSCALE 5000
+#define ANGULARSCALE 2000
 
 bool motorInitFlag = true;
 
@@ -177,7 +177,7 @@ int driverInit()
 void cmd_vel_callback(const geometry_msgs::Twist msg)
 {
   if(motorInitFlag){
-    motorsInit();
+    driverInit();
     ROS_INFO("Motors initialized.");
     motorInitFlag = false;
   }
@@ -185,25 +185,33 @@ void cmd_vel_callback(const geometry_msgs::Twist msg)
   float linear_x = msg.linear.x; // forward/backwards (max +-0.22)
   float angular_z = msg.angular.z; // (max +-2.84) negative = clockwise rotation
 
-  float speedRightWheel = linear_x*LINEARSCALE;
-  float speedLeftWheel = linear_x*LINEARSCALE;
+  if(angular_z >= 0) // counterclockwise
+  {
+    float speedRightWheel = linear_x*LINEARSCALE + angular_z*ANGULARSCALE;
+    float speedLeftWheel = linear_x*LINEARSCALE - angular_z*ANGULARSCALE;
+  }
+  else
+  {
+    float speedRightWheel = linear_x*LINEARSCALE - angular_z*ANGULARSCALE;
+    float speedLeftWheel = linear_x*LINEARSCALE + angular_z*ANGULARSCALE;
+  }
 
-  if(speedRightWheel || speedLeftWheel == 0)
+  if(speedRightWheel && speedLeftWheel == 0)
   {
     rightMotor.hardStop();
     leftMotor.hardStop();
-    ROS_INFO("Hard stop.")
+    ROS_INFO("Hard stop.");
   }
 
   if(speedRightWheel > 0) // FWD
     rightMotor.run(REV, speedRightWheel); // directions switched on right motor
   else
-    rightMotor.run(FWD, speedRightWheel);
+    rightMotor.run(FWD, fabs(speedRightWheel));
 
   if(speedLeftWheel > 0) // FWD
     leftMotor.run(FWD, speedLeftWheel);
   else
-    leftMotor.run(REV, speedLeftWheel);
+    leftMotor.run(REV, fabs(speedLeftWheel));
 
 }
 
