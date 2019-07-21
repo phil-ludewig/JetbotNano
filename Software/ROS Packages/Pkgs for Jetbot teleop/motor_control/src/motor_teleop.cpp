@@ -184,16 +184,18 @@ void cmd_vel_callback(const geometry_msgs::Twist msg)
 
   float linear_x = msg.linear.x; // forward/backwards (max +-0.22)
   float angular_z = msg.angular.z; // (max +-2.84) negative = clockwise rotation
+  float speedRightWheel;
+  float speedLeftWheel;
 
   if(angular_z >= 0) // counterclockwise
   {
-    float speedRightWheel = linear_x*LINEARSCALE + angular_z*ANGULARSCALE;
-    float speedLeftWheel = linear_x*LINEARSCALE - angular_z*ANGULARSCALE;
+    speedRightWheel = linear_x*LINEARSCALE + angular_z*ANGULARSCALE;
+    speedLeftWheel = linear_x*LINEARSCALE - angular_z*ANGULARSCALE;
   }
   else
   {
-    float speedRightWheel = linear_x*LINEARSCALE - angular_z*ANGULARSCALE;
-    float speedLeftWheel = linear_x*LINEARSCALE + angular_z*ANGULARSCALE;
+    speedRightWheel = linear_x*LINEARSCALE - angular_z*ANGULARSCALE;
+    speedLeftWheel = linear_x*LINEARSCALE + angular_z*ANGULARSCALE;
   }
 
   if(speedRightWheel && speedLeftWheel == 0)
