@@ -40,6 +40,7 @@ void spiInit(Linux_SPI *spi_dev)
     {
         printf("Error: %s\n", spi_dev->strerror(spi_dev->get_errno()));
         exit(-1);
+
     }
 
 

@@ -1,0 +1,52 @@
+###########################
+# REALSENSE D435i and ROS #
+###########################
+
+- Use an SD card of at least 64GB, better 128GB! Kernel patch takes up 15-20GB
+- Install ROS melodic (https://wiki.ros.org/melodic/Installation/Ubuntu) (don't skip environment setup!)
+- Install swapfile from here (https://github.com/JetsonHacksNano/installSwapfile)
+
+### Install ROS SDK for Realsense ###
+
+- Don't install using jetsonhacks script, install librealsense manually
+- Follow the manual (steps below just for overview): https://github.com/IntelRealSense/realsense-ros
+- Clone librealsense (not realsense-ros package) into catkin_ws/src/ and follow instructions (otherwise rosdep can't find librealsense2)
+- For Jetson Nano skip the Kernel patch for librealsense and patch kernel with jetsonhacks script instead
+- For Desktop I executed the patch-realsense-ubuntu-lts script but not sure if it got applied for my kernel...
+- Run cmake with option for demos and tutorials (cmake ../ -DBUILD_EXAMPLES=true)
+- Build using all cores (sudo make uninstall && make clean && make **-j4** && sudo make install) (takes a long time!)
+- clone ddynamic_reconfigure package into /src (https://github.com/pal-robotics/ddynamic_reconfigure/tree/kinetic-devel)
+- clone realsense-ros package into /src (https://github.com/IntelRealSense/realsense-ros.git) (skip git checkout)
+- rosdep update (in /src)
+- rosdep install --from-paths src --ignore-src (in /catkin_ws)
+- Move librealsense folder out of /src directory (e.g. to desktop) to prevent catkin_make errors
+- Follow catkin_make instructions
+- (For JetsonNano) Patch Kernels for realsense cameras: clone https://github.com/JetsonHacksNano/installLibrealsense to /home folder
+- (For JetsonNano) ONLY run patchUbuntu.sh script, NOT installLibrealsense.sh! (If script asks to clone librealsense, say yes)
+
+### RtabMAP Tutorial with D435i
+- MAKE SURE TO INSTALL THE MELODIC VERSION, DON'T COPY THE INSTALL LINKS (for kinetic)
+- follow this guide: https://github.com/IntelRealSense/realsense-ros/wiki/SLAM-with-D435i, basically:
+- rosinstall imu filter: sudo apt-get install ros-melodic-imu-filter-madgwick
+- rosinstall rtabmap: sudo apt-get install ros-melodic-rtabmap-ros
+- rosinstall robot localization: sudo apt-get install ros-melodic-robot-localization
+
+### Launch RtabMAP:
+- Follow these instructions for D435i to create map: https://wiki.ros.org/rtabmap_ros/Tutorials/HandHeldMapping
+- RtabMAP database will be saved upon closing RtabMAPVIZ
+
+### Saving the pointcloud:
+- With RtabMAPVIZ running, save pcl with: rosrun pcl_ros pointcloud_to_pcd input:=/rtabmap/cloud_map
+- Mesh can also be exported through RtabMAPVIZ menu
+- View pointcloud with: pcl_viewer XXX.pcd (XXX the given name during saving process)
+- Good tutorial on all of the above: https://github.com/IntelRealSense/realsense-ros/wiki/SLAM-with-D435i
+
+#################################
+# SPI Connection on Jetson Nano #
+#################################
+Enable SPI with Script from here: https://github.com/rt-net/JetsonNano_DT_SPI
+Good Thread: https://devtalk.nvidia.com/default/topic/1050427/jetson-nano/enabling-spidev-on-the-jetson-nano-is-hanging-when-flashing/2
+
+Commands:
+List SPI devices: ls /dev/spi* (should return /dev/spidev0.0 if SPI enabled)
+spidev loopback test (connect SPI1 MISO and MOSI pin (19 & 21) together) : https://importgeek.wordpress.com/2017/09/11/raspberry-pi-spi-loopback-testing/
